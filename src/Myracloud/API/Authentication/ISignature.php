@@ -1,11 +1,6 @@
 <?php
-/**
- * User: blorenz
- * Date: 11.03.14
- * Time: 11:39
- */
 
-namespace Soprado\MyraSecurityBundle\Authentication;
+namespace Myracloud\API\Authentication;
 
 /**
  * Class ISignature

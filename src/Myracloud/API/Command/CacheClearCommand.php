@@ -1,16 +1,13 @@
 <?php
-/**
- * User: blorenz
- * Date: 15.03.16
- * Time: 10:57
- */
 
 namespace Myracloud\API\Command;
 
+use Myracloud\API\Service\MyracloudService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class CacheClear
@@ -19,17 +16,18 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CacheClearCommand extends AbstractCommand
 {
-    /** @var array */
-    private $options;
-
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('myracloud:api:cache');
-        $this->addArgument('apiKey', InputArgument::REQUIRED, 'Api key to authenticate against Myracloud API', null);
+        $this->setName('myracloud:api:cacheClear');
+        $this->addArgument('apiKey', InputArgument::REQUIRED, 'Api key to authenticate against Myracloud API.', null);
+        $this->addArgument('secret', InputArgument::REQUIRED, 'Secret to authenticate against Myracloud API.', null);
         $this->addArgument('fqdn', InputArgument::REQUIRED, 'Domain that should be used to clear the cache.');
+
+        $this->addOption('cleanupRule', null, InputOption::VALUE_REQUIRED, 'Rule that describes which files should be removed from the cache.', null);
+        $this->addOption('recursive', 'r', InputOption::VALUE_NONE, 'Should the rule applied recursively.');
 
         parent::configure();
     }
@@ -37,32 +35,45 @@ class CacheClearCommand extends AbstractCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        parent::execute($input, $output);
+        parent::initialize($input, $output);
 
-        $content = [
-            'fqdn'      => 'www.example.com',
-            'resource'  => '/*.jpg',
-            'recursive' => true
-        ];
+        $this->resolver->setDefaults([
+            'apiKey'      => null,
+            'secret'      => null,
+            'fqdn'        => null,
+            'cleanupRule' => null,
+            'language'    => self::DEFAULT_LANGUAGE,
+            'apiEndpoint' => self::DEFAULT_API_ENDPOINT
+        ]);
 
-        $curl = curl_init();
-
-
-        //PUT /{language}/rapi/cacheClear/{domain} HTTP/1.1
-        //Host: api.myracloud.com
-        //Date: 2014-05-02T07:17+0200
-        //Authorization: MYRA {apiKey}:{signature}
-        //{
-        //"fqdn"
-        //"resource"
-        //"recursive"
-        //: "www.example.com",
-        //: "/*.jpg",
-        //: true
-        //}
+        $this->resolver->setNormalizer('fqdn', function (OptionsResolver $resolver, $value) {
+            return trim($value, '.');
+        });
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->resolveOptions($input, $output);
 
+        $content = [
+            'fqdn'      => $this->options['fqdn'],
+            'resource'  => $this->options['cleanupRule'],
+            'recursive' => $input->getOption('recursive')
+        ];
+
+        $ret = $this->service->cacheClear(MyracloudService::METHOD_CREATE, $this->options['fqdn'], $content);
+
+        if ($output->isVerbose()) {
+            print_r($ret);
+        }
+
+        if ($ret) {
+            $output->writeln('<fg=green;options=bold>Success</>');
+        }
+    }
 }

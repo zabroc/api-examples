@@ -1,6 +1,12 @@
+#!/usr/bin/env php
 <?php
-/**
- * User: blorenz
- * Date: 15.03.16
- * Time: 13:39
- */
+
+require_once(__DIR__ . '/../vendor/autoload.php');
+
+set_time_limit(0);
+
+$app = new Symfony\Component\Console\Application();
+$app->addCommands([
+    new \Myracloud\API\Command\CacheClearCommand(),
+]);
+$app->run();

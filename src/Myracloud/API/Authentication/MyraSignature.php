@@ -1,11 +1,6 @@
 <?php
-/**
- * User: blorenz
- * Date: 11.03.14
- * Time: 11:38
- */
 
-namespace Soprado\MyraSecurityBundle\Authentication;
+namespace Myracloud\API\Authentication;
 
 /**
  * Class MyraSignature
@@ -77,8 +72,8 @@ class MyraSignature implements ISignature
         $signingString = md5($this->content);
         $signingString .= '#' . $this->method;
         $signingString .= '#' . $this->uri;
-        $signingString .= '#' . $this->getHeaderData('content-type');
-        $signingString .= '#' . $this->getHeaderData('date');
+        $signingString .= '#' . $this->getHeaderData('Content-Type');
+        $signingString .= '#' . $this->getHeaderData('Date');
 
         return $signingString;
     }
@@ -90,7 +85,7 @@ class MyraSignature implements ISignature
     {
         $signingString = $this->getStringToSign();
 
-        $key = hash_hmac('sha256', $this->getHeaderData('date'), 'MYRA' . $this->secret);
+        $key = hash_hmac('sha256', $this->getHeaderData('Date'), 'MYRA' . $this->secret);
         $key = hash_hmac('sha256', 'myra-api-request', $key);
 
         return base64_encode(hash_hmac('sha512', $signingString, $key, true));
