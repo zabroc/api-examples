@@ -3,8 +3,8 @@
     "description"      : "Example code for Myracloud API.",
     "authors"          : [
         {
-            "name" : "Bruno Lorenz",
-            "email": "bruno.lorenz@myracloud.com"
+            "name" : "Myracloud",
+            "email": "info@myracloud.com"
         }
     ],
     "autoload"         : {
