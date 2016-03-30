@@ -33,7 +33,7 @@ class MyracloudService
      * Also append the authentication part for the request that is created.
      *
      * @param string $url
-     * @param array $options
+     * @param array  $options
      * @return array
      */
     private function prepareHeaderData($url, array $options)
@@ -59,11 +59,53 @@ class MyracloudService
     }
 
     /**
+     * @param string $method
+     * @param string $fqdn
+     * @param array  $data
+     * @return mixed|null
+     * @throws ApiCallException
+     * @throws PermissionDeniedException
+     * @throws UnknownErrorException
+     */
+    public function errorPages($method = self::METHOD_UPDATE, $fqdn = '', array $data = [])
+    {
+        try {
+            return $this->request([
+                'method'  => $method,
+                'url'     => 'errorpages/' . trim($fqdn, '.'),
+                'content' => json_encode($data),
+            ]);
+        } catch (ApiCallException $ex) {
+            if (!$this->output) {
+                throw $ex;
+            }
+
+            print_r($ex->getData());
+
+            $retData = $ex->getData();
+            if (isset($retData['targetObject'][0])) {
+                $row = $retData['targetObject'][0];
+
+                foreach ($retData['violationList'] as $violation) {
+                    $this->output->writeln(sprintf(
+                        '<fg=red;options=bold>%s [property="%s", givenValue="%s"]</>',
+                        $violation['message'],
+                        $violation['propertyPath'],
+                        $row[$violation['propertyPath']]
+                    ));
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Handles cache clear operations.
      *
      * @param string $method
      * @param string $fqdn
-     * @param array $data
+     * @param array  $data
      * @return mixed
      * @throws ApiCallException
      */
