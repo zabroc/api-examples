@@ -41,7 +41,7 @@ class ErrorPagesCommand extends AbstractCommand
         ), self::TYPE_OPERATION_UPLOAD);
 
 
-        $this->setDescription(sprintf(<<<EOF
+        $this->setHelp(sprintf(<<<EOF
 The errorPages command allows you to set error pages.
 
 Valid errorcodes are: %s.

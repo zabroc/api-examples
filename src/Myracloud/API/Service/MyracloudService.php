@@ -241,7 +241,7 @@ class MyracloudService
     public function __construct(array $defaults, OutputInterface $output = null)
     {
         $this->requestResolver = new OptionsResolver();
-        $this->requestResolver->setDefaults(array_merge($defaults, [
+        $this->requestResolver->setDefaults(array_merge([
             'apiEndpoint' => AbstractCommand::DEFAULT_API_ENDPOINT,
             'language'    => AbstractCommand::DEFAULT_LANGUAGE,
             'method'      => self::METHOD_LIST,
@@ -250,7 +250,7 @@ class MyracloudService
                 'Date'         => date('c'),
                 'Content-Type' => 'application/json',
             ]
-        ]));
+        ], $defaults));
 
         $this->requestResolver->setRequired(['method', 'url', 'apiKey', 'secret']);
         $this->output = $output;

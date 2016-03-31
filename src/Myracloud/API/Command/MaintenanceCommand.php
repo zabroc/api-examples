@@ -42,9 +42,11 @@ class MaintenanceCommand extends AbstractCommand
         $this->addOption('nStart', null, InputOption::VALUE_REQUIRED, 'When updating a maintenance this will be the new start date.');
         $this->addOption('nEnd', null, InputOption::VALUE_REQUIRED, 'When updating a maintenance this will be the new end date.');
 
-
-        $this->setDescription(sprintf(<<<EOF
+        $this->setHelp(sprintf(<<<EOF
 The maintenance command allows you to list, create, update, and delete maintenace pages.
+
+The options "start" and "end" are used to identify the maintenance that should be updated or deleted.
+In case of an update (that changes the start and / or end date) you need also to set nStart and / or nEnd to the new dates. 
 
 <fg=green>Valid operations are: %s.</>
 
@@ -58,10 +60,10 @@ bin/console myracloud:api:maintenance -f file.html -s "2016-03-30 00:00:00" -e "
 bin/console myracloud:api:maintenance -o update -f newFile.html -s "2016-03-30 00:00:00" -e "2017-04-01 00:00:00" <apiKey> <secret> <fqdn>
 
 <fg=yellow>Example usage of maintenance to update the start / end date of a existing maintenance:</>
-bin/console myracloud:api:maintenance -o update -nStart="2016-04-01 01:00:00" -nEnd="2016-04-02 02:00:00" -s "2016-03-30 00:00:00" -e "2017-04-01 00:00:00" <apiKey> <secret> <fqdn>
+bin/console myracloud:api:maintenance -o update --nStart="2016-04-01 01:00:00" --nEnd="2016-04-02 02:00:00" -s "2016-03-30 00:00:00" -e "2017-04-01 00:00:00" <apiKey> <secret> <fqdn>
 
 <fg=yellow>Example usage of maintenance to update the start date of a existing maintenance:</>
-bin/console myracloud:api:maintenance -o update -nStart="2016-04-01 01:00:00" -s "2016-03-30 00:00:00" -e "2017-04-01 00:00:00" <apiKey> <secret> <fqdn>
+bin/console myracloud:api:maintenance -o update --nStart="2016-04-01 01:00:00" -s "2016-03-30 00:00:00" -e "2017-04-01 00:00:00" <apiKey> <secret> <fqdn>
 
 <fg=yellow>Example usage to remove a existing maintenance:</>
 bin/console myracloud:api:maintenance -o delete -s "2016-03-30 00:00:00" -e "2017-04-01 00:00:00" <apiKey> <secret> <fqdn>

@@ -36,14 +36,16 @@ abstract class AbstractCommand extends Command
      */
     protected function resolveOptions(InputInterface $input, OutputInterface $output)
     {
-        $data          = array_merge($input->getArguments(), $input->getOptions());
-        $data          = array_intersect_key($data, array_flip($this->resolver->getDefinedOptions()));
+        $data = array_merge($input->getArguments(), $input->getOptions());
+        $data = array_intersect_key($data, array_flip($this->resolver->getDefinedOptions()));
+
         $this->options = $this->resolver->resolve($data);
 
         $this->service = new MyracloudService([
-            'apiKey'   => $this->options['apiKey'],
-            'secret'   => $this->options['secret'],
-            'language' => $this->options['language'],
+            'apiEndpoint' => $this->options['apiEndpoint'],
+            'apiKey'      => $this->options['apiKey'],
+            'secret'      => $this->options['secret'],
+            'language'    => $this->options['language'],
         ], $output);
     }
 
