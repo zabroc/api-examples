@@ -30,6 +30,8 @@ class CacheClearCommand extends AbstractCommand
         $this->addOption('cleanupRule', null, InputOption::VALUE_REQUIRED, 'Rule that describes which files should be removed from the cache.', null);
         $this->addOption('recursive', 'r', InputOption::VALUE_NONE, 'Should the rule applied recursively.');
 
+        $this->setDescription('CacheClear commands allows you to do a cache clear via Myracloud API.');
+
         parent::configure();
     }
 

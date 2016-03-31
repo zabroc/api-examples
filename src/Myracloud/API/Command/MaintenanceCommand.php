@@ -42,6 +42,7 @@ class MaintenanceCommand extends AbstractCommand
         $this->addOption('nStart', null, InputOption::VALUE_REQUIRED, 'When updating a maintenance this will be the new start date.');
         $this->addOption('nEnd', null, InputOption::VALUE_REQUIRED, 'When updating a maintenance this will be the new end date.');
 
+        $this->setDescription('The maintenance command allows you to list, create, update, and delete maintenace pages.');
         $this->setHelp(sprintf(<<<EOF
 The maintenance command allows you to list, create, update, and delete maintenace pages.
 

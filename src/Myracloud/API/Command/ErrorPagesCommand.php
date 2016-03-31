@@ -41,6 +41,7 @@ class ErrorPagesCommand extends AbstractCommand
         ), self::TYPE_OPERATION_UPLOAD);
 
 
+        $this->setDescription('The errorPages command allows you to set error pages.');
         $this->setHelp(sprintf(<<<EOF
 The errorPages command allows you to set error pages.
 
