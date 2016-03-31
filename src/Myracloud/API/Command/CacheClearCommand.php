@@ -43,6 +43,7 @@ class CacheClearCommand extends AbstractCommand
         parent::initialize($input, $output);
 
         $this->resolver->setDefaults([
+            'noCheckCert' => false,
             'apiKey'      => null,
             'secret'      => null,
             'fqdn'        => null,

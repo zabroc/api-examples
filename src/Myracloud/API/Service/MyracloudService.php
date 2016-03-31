@@ -203,6 +203,10 @@ class MyracloudService
             CURLOPT_HTTPHEADER     => $this->prepareHeaderData($url, $options),
         ]);
 
+        if ($options['noCheckCert'] === true) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
         if ($options['verbose'] === true) {
             curl_setopt($ch, CURLOPT_VERBOSE, true);
         }
