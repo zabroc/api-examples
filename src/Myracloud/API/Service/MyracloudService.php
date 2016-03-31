@@ -203,6 +203,10 @@ class MyracloudService
             CURLOPT_HTTPHEADER     => $this->prepareHeaderData($url, $options),
         ]);
 
+        if ($options['verbose'] === true) {
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
+        }
+
         if (!empty($options['content']) && $options['method'] !== self::METHOD_LIST) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $options['content']);
         }
