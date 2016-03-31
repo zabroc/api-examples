@@ -3,6 +3,7 @@
 namespace Myracloud\API\Command;
 
 use Myracloud\API\Service\MyracloudService;
+use Myracloud\API\Util\Normalizer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,7 +33,7 @@ class ErrorPagesCommand extends AbstractCommand
         $this->addArgument('fqdn', InputArgument::REQUIRED, 'Domain that should be used to clear the cache.');
 
         $this->addOption('errorCodes', 'e', InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Error codes to append given errorpage');
-        $this->addOption('contentFile', 'f', InputOption::VALUE_REQUIRED, 'File that contains the error page.');
+        $this->addOption('contentFile', 'f', InputOption::VALUE_REQUIRED, 'HTML file that contains the error page.');
         $this->addOption('operation', 'o', InputOption::VALUE_REQUIRED, sprintf(
             'Operation that should be done possible values are "%s" and "%s".',
             self::TYPE_OPERATION_UPLOAD,
@@ -41,7 +42,7 @@ class ErrorPagesCommand extends AbstractCommand
 
 
         $this->setDescription(sprintf(<<<EOF
-The ErrorPages command allows you to set error pages.
+The errorPages command allows you to set error pages.
 
 Valid errorcodes are: %s.
 
@@ -78,10 +79,7 @@ EOF
 
         $this->resolver->setAllowedValues('operation', [self::TYPE_OPERATION_UPLOAD, self::TYPE_OPERATION_DELETE]);
 
-        $this->resolver->setNormalizer('fqdn', function (OptionsResolver $resolver, $value) {
-            return trim($value, '.');
-        });
-
+        $this->resolver->setNormalizer('fqdn', Normalizer::normalizeFqdn());
         $this->resolver->setNormalizer('errorCodes', function (OptionsResolver $resolver, $value) {
             $data = $value;
 

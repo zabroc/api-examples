@@ -59,6 +59,65 @@ class MyracloudService
     }
 
     /**
+     * Outputs the violations on command line when a proper outputInterface ist set.
+     *
+     * @param array $retData
+     */
+    private function outputViolations(array $retData)
+    {
+        if (!$this->output) {
+            return;
+        }
+
+        if ($this->output->isVerbose()) {
+            print_r($retData);
+        }
+
+        $row = null;
+        if (isset($retData['targetObject'][0])) {
+            $row = $retData['targetObject'][0];
+        }
+
+        foreach ($retData['violationList'] as $violation) {
+            $this->output->writeln(sprintf(
+                '<fg=red;options=bold>%s [property="%s", givenValue="%s"]</>',
+                $violation['message'],
+                $violation['propertyPath'],
+                ($row ? $row[$violation['propertyPath']] : 'N/A')
+            ));
+        }
+    }
+
+    /**
+     * @param string $method
+     * @param string $fqdn
+     * @param array  $data
+     * @param int    $page
+     * @return null
+     * @throws ApiCallException
+     * @throws PermissionDeniedException
+     * @throws UnknownErrorException
+     */
+    public function maintenance($method, $fqdn, array $data = [], $page = 1)
+    {
+        try {
+            return $this->request([
+                'method'  => $method,
+                'url'     => 'maintenance/' . trim($fqdn, '.'),
+                'content' => (!empty($data) ? json_encode($data) : ''),
+            ], $page);
+        } catch (ApiCallException $ex) {
+            if (!$this->output) {
+                throw $ex;
+            }
+
+            $this->outputViolations($ex->getData());
+        }
+
+        return null;
+    }
+
+    /**
      * @param string $method
      * @param string $fqdn
      * @param array  $data
@@ -67,34 +126,20 @@ class MyracloudService
      * @throws PermissionDeniedException
      * @throws UnknownErrorException
      */
-    public function errorPages($method = self::METHOD_UPDATE, $fqdn = '', array $data = [])
+    public function errorPages($method, $fqdn, array $data = [])
     {
         try {
             return $this->request([
                 'method'  => $method,
                 'url'     => 'errorpages/' . trim($fqdn, '.'),
-                'content' => json_encode($data),
+                'content' => (!empty($data) ? json_encode($data) : ''),
             ]);
         } catch (ApiCallException $ex) {
             if (!$this->output) {
                 throw $ex;
             }
 
-            print_r($ex->getData());
-
-            $retData = $ex->getData();
-            if (isset($retData['targetObject'][0])) {
-                $row = $retData['targetObject'][0];
-
-                foreach ($retData['violationList'] as $violation) {
-                    $this->output->writeln(sprintf(
-                        '<fg=red;options=bold>%s [property="%s", givenValue="%s"]</>',
-                        $violation['message'],
-                        $violation['propertyPath'],
-                        $row[$violation['propertyPath']]
-                    ));
-                }
-            }
+            $this->outputViolations($ex->getData());
         }
 
         return null;
@@ -109,32 +154,20 @@ class MyracloudService
      * @return mixed
      * @throws ApiCallException
      */
-    public function cacheClear($method = self::METHOD_LIST, $fqdn = '', array $data = [])
+    public function cacheClear($method, $fqdn, array $data = [])
     {
         try {
             return $this->request([
                 'method'  => $method,
                 'url'     => 'cacheClear/' . trim($fqdn, '.'),
-                'content' => json_encode($data),
+                'content' => (!empty($data) ? json_encode($data) : ''),
             ]);
         } catch (ApiCallException $ex) {
             if (!$this->output) {
                 throw $ex;
             }
 
-            print_r($ex->getData());
-
-            $retData = $ex->getData();
-            $row     = $retData['targetObject'][0];
-
-            foreach ($retData['violationList'] as $violation) {
-                $this->output->writeln(sprintf(
-                    '<fg=red;options=bold>%s [property="%s", givenValue="%s"]</>',
-                    $violation['message'],
-                    $violation['propertyPath'],
-                    $row[$violation['propertyPath']]
-                ));
-            }
+            $this->outputViolations($ex->getData());
         }
 
         return null;
@@ -144,17 +177,24 @@ class MyracloudService
      * Calls the given command
      *
      * @param array $options
-     * @return mixed|null
+     * @param int   $page
+     * @return null
      * @throws ApiCallException
      * @throws PermissionDeniedException
      * @throws UnknownErrorException
      */
-    protected function request(array $options)
+    protected function request(array $options, $page = 1)
     {
         $options = $this->requestResolver->resolve($options);
 
         $url      = '/' . $options['language'] . '/rapi/' . ltrim($options['url'], '/');
         $endpoint = rtrim($options['apiEndpoint'], '/') . $url;
+
+        // When listing append the current page
+        if ($options['method'] === self::METHOD_LIST) {
+            $endpoint .= '/' . $page;
+            $url .= '/' . $page;
+        }
 
         $ch = curl_init($endpoint);
         curl_setopt_array($ch, [

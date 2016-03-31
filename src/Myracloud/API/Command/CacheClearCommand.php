@@ -3,6 +3,7 @@
 namespace Myracloud\API\Command;
 
 use Myracloud\API\Service\MyracloudService;
+use Myracloud\API\Util\Normalizer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -48,9 +49,7 @@ class CacheClearCommand extends AbstractCommand
             'apiEndpoint' => self::DEFAULT_API_ENDPOINT
         ]);
 
-        $this->resolver->setNormalizer('fqdn', function (OptionsResolver $resolver, $value) {
-            return trim($value, '.');
-        });
+        $this->resolver->setNormalizer('fqdn', Normalizer::normalizeFqdn());
     }
 
     /**
