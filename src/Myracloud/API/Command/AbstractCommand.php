@@ -46,6 +46,7 @@ abstract class AbstractCommand extends Command
             'apiKey'      => $this->options['apiKey'],
             'secret'      => $this->options['secret'],
             'language'    => $this->options['language'],
+            'verbose'     => $output->isVeryVerbose(),
         ], $output);
     }
 
