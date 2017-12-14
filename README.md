@@ -33,4 +33,4 @@ Usage:
       myracloud:api:cacheClear   CacheClear command allows you to do a cache clear via Myra API.
       myracloud:api:errorPages   The errorPages command allows you to set error pages.
       myracloud:api:maintenance  The maintenance command allows you to list, create, update, and delete maintenace pages.
-      myracloud:api:maintenance  The command allows you creating statistics via Myra API.
+      myracloud:api:statistic    The command allows you creating statistics via Myra API.
