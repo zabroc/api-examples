@@ -1,5 +1,5 @@
 # API examples
-Example code for Myracloud API usage.
+Example code for Myra API usage.
 
 Prerequisits:
 
@@ -30,6 +30,7 @@ Usage:
       list                       Lists commands
 
      myracloud
-      myracloud:api:cacheClear   CacheClear command allows you to do a cache clear via Myracloud API.
+      myracloud:api:cacheClear   CacheClear command allows you to do a cache clear via Myra API.
       myracloud:api:errorPages   The errorPages command allows you to set error pages.
       myracloud:api:maintenance  The maintenance command allows you to list, create, update, and delete maintenace pages.
+      myracloud:api:maintenance  The command allows you creating statistics via Myra API.
