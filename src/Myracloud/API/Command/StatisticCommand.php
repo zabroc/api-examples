@@ -31,11 +31,13 @@ class StatisticCommand extends AbstractCommand
         $this->addOption('startDate', 's', InputOption::VALUE_REQUIRED, 'startDate Time.', date('Y-m-d H:i:s', strtotime('today')));
         $this->addOption('endDate', 'e', InputOption::VALUE_REQUIRED, 'endDate Time.', date('Y-m-d H:i:s', strtotime('now')));
 
-        $this->setHelp(<<<EOF
+        $this->setHelp(sprintf(<<<EOF
 <fg=yellow>Example usage:</>
-bin/console myracloud:api:statistic -s '2017-12-14 00:00:00' -e '2017-12-13 23:59:59' <apiKey> <secret> <fqdn> -v
+bin/console myracloud:api:statistic -s %s -e %s <apiKey> <secret> <fqdn>
 EOF
-      );
+        , date('Y-m-d H:i:s', strtotime('today'))
+        , date('Y-m-d H:i:s', strtotime('now'))
+      ));
 
         parent::configure();
     }
@@ -164,5 +166,4 @@ EOF
             ),
         );
     }
-   
 }

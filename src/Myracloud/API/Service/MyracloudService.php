@@ -183,7 +183,6 @@ class MyracloudService
      */
     public function statistic($method, array $data = [])
     {
-
         try {
             return $this->request([
                 'method'  => $method,
@@ -200,7 +199,6 @@ class MyracloudService
 
         return null;
     }
-
 
     /**
      * Calls the given command
@@ -258,7 +256,7 @@ class MyracloudService
                 $data = json_decode($ret, true);
 
                 if (isset($data['error'])) {
-                    throw new ApiCallException('There was an error in the last api call.', $data);
+                    throw new ApiCallException('There was an error in the last API call.', $data);
                 }
 
                 break;
