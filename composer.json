@@ -1,6 +1,6 @@
 {
     "name"             : "myracloud/api-examples",
-    "description"      : "Example code for Myracloud API.",
+    "description"      : "Example code for Myra API.",
     "authors"          : [
         {
             "name" : "Myracloud",
