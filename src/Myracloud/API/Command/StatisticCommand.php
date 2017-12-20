@@ -26,7 +26,7 @@ class StatisticCommand extends AbstractCommand
         $this->setName('myracloud:api:statistic');
         $this->addArgument('apiKey', InputArgument::REQUIRED, 'Api key to authenticate against Myra API.', null);
         $this->addArgument('secret', InputArgument::REQUIRED, 'Secret to authenticate against Myra API.', null);
-        $this->addArgument('fqdn', InputArgument::REQUIRED, 'Domain that should be used to clear the cache.'); 
+        $this->addArgument('fqdn', InputArgument::REQUIRED, 'Domain used for statistics.'); 
 
         $this->addOption('startDate', 's', InputOption::VALUE_REQUIRED, 'startDate Time.', date('Y-m-d H:i:s', strtotime('today')));
         $this->addOption('endDate', 'e', InputOption::VALUE_REQUIRED, 'endDate Time.', date('Y-m-d H:i:s', strtotime('now')));
