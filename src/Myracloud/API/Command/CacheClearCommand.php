@@ -74,7 +74,7 @@ class CacheClearCommand extends AbstractCommand
             print_r($ret);
         }
 
-        if ($ret) {
+        if ($ret !== null) {
             $output->writeln('<fg=green;options=bold>Success</>');
         }
     }
