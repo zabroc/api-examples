@@ -1,5 +1,5 @@
-# API examples
-Example code for Myra API usage.
+# API examples in PHP
+Example code for Myra API usage with PHP.
 
 Prerequisits:
 
