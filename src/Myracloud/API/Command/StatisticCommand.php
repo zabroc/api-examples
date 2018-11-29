@@ -58,6 +58,7 @@ EOF
             'endDate'     => null,
             'language'    => self::DEFAULT_LANGUAGE,
             'apiEndpoint' => self::DEFAULT_API_ENDPOINT,
+            'proxy'       => null,
         ]);
 
         $this->resolver->setNormalizer('startDate', Normalizer::normalizeDate(true));

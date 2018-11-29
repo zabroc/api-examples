@@ -200,25 +200,55 @@ class MyracloudService
         return null;
     }
 
+
+    /**
+     * Fetches subdomain settings.
+     *
+     * @param string $method
+     * @param string $fqdn
+     * @return mixed
+     * @throws ApiCallException
+     */
+    public function subdomainSetting($method, $fqdn)
+    {
+        try {
+            return $this->request([
+                'method'  => $method,
+                'url'     => 'subdomainSetting/' . trim($fqdn, '.'). '?flat',
+            ]);
+        } catch (ApiCallException $ex) {
+            if (!$this->output) {
+                throw $ex;
+            }
+
+            $this->outputViolations($ex->getData());
+        }
+
+        return null;
+    }
+
+
+
+
     /**
      * Calls the given command
      *
      * @param array $options
-     * @param int   $page
+     * @param int|null   $page
      * @return null
      * @throws ApiCallException
      * @throws PermissionDeniedException
      * @throws UnknownErrorException
      */
-    protected function request(array $options, $page = 1)
+    protected function request(array $options, $page = null)
     {
         $options = $this->requestResolver->resolve($options);
 
         $url      = '/' . $options['language'] . '/rapi/' . ltrim($options['url'], '/');
         $endpoint = rtrim($options['apiEndpoint'], '/') . $url;
 
-        // When listing append the current page
-        if ($options['method'] === self::METHOD_LIST) {
+        //When listing append the current page
+        if ($page && $options['method'] === self::METHOD_LIST) {
             $endpoint .= '/' . $page;
             $url .= '/' . $page;
         }
@@ -240,6 +270,10 @@ class MyracloudService
 
         if (!empty($options['content']) && $options['method'] !== self::METHOD_LIST) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $options['content']);
+        }
+
+        if (!empty($options['proxy'])) {
+            curl_setopt($ch, CURLOPT_PROXY, $options['proxy']);
         }
 
         $ret        = curl_exec($ch);

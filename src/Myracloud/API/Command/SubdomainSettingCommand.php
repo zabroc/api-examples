@@ -4,6 +4,7 @@ namespace Myracloud\API\Command;
 
 use Myracloud\API\Service\MyracloudService;
 use Myracloud\API\Util\Normalizer;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,26 +12,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CacheClear
+ * Class Statistic
  *
- * @package Myracloud\API\Command
+ * @package Myracloud\API\Statistic
  */
-class CacheClearCommand extends AbstractCommand
+class SubdomainSettingCommand extends AbstractCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('myracloud:api:cacheClear');
+        $this->setName('myracloud:api:subdomainSetting');
         $this->addArgument('apiKey', InputArgument::REQUIRED, 'Api key to authenticate against Myra API.', null);
         $this->addArgument('secret', InputArgument::REQUIRED, 'Secret to authenticate against Myra API.', null);
-        $this->addArgument('fqdn', InputArgument::REQUIRED, 'Domain that should be used to clear the cache.');
+        $this->addArgument('fqdn', InputArgument::REQUIRED, 'Domain used for listings.');
 
-        $this->addOption('cleanupRule', null, InputOption::VALUE_REQUIRED, 'Rule that describes which files should be removed from the cache.', null);
-        $this->addOption('recursive', 'r', InputOption::VALUE_NONE, 'Should the rule applied recursively.');
-
-        $this->setDescription('CacheClear commands allows you to do a cache clear via Myra API.');
 
         parent::configure();
     }
@@ -44,13 +41,12 @@ class CacheClearCommand extends AbstractCommand
 
         $this->resolver->setDefaults([
             'noCheckCert' => false,
-            'apiKey'      => null,
-            'secret'      => null,
-            'fqdn'        => null,
-            'cleanupRule' => null,
-            'language'    => self::DEFAULT_LANGUAGE,
+            'apiKey' => null,
+            'secret' => null,
+            'fqdn' => null,
+            'language' => self::DEFAULT_LANGUAGE,
             'apiEndpoint' => self::DEFAULT_API_ENDPOINT,
-            'proxy'       => null,
+            'proxy' => null,
         ]);
 
         $this->resolver->setNormalizer('fqdn', Normalizer::normalizeFqdn());
@@ -63,20 +59,26 @@ class CacheClearCommand extends AbstractCommand
     {
         $this->resolveOptions($input, $output);
 
-        $content = [
-            'fqdn'      => $this->options['fqdn'],
-            'resource'  => $this->options['cleanupRule'],
-            'recursive' => $input->getOption('recursive')
-        ];
-
-        $ret = $this->service->cacheClear(MyracloudService::METHOD_CREATE, $this->options['fqdn'], $content);
+        $ret = $this->service->subdomainSetting(MyracloudService::METHOD_LIST, $this->options['fqdn']);
 
         if ($output->isVerbose()) {
             print_r($ret);
         }
 
-        if ($ret !== null) {
-            $output->writeln('<fg=green;options=bold>Success</>');
+        if ($ret) {
+            $table = new Table($output);
+            $table->setHeaders(['Key', 'Value']);
+            foreach ($ret as $key => $value) {
+                if (is_array($value)) {
+                    $value = json_encode($value);
+                }
+
+                if (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                }
+                $table->addRow([$key, $value]);
+            }
+            $table->render();
         }
     }
 }
