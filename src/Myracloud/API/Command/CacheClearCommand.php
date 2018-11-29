@@ -49,7 +49,8 @@ class CacheClearCommand extends AbstractCommand
             'fqdn'        => null,
             'cleanupRule' => null,
             'language'    => self::DEFAULT_LANGUAGE,
-            'apiEndpoint' => self::DEFAULT_API_ENDPOINT
+            'apiEndpoint' => self::DEFAULT_API_ENDPOINT,
+            'proxy'       => null,
         ]);
 
         $this->resolver->setNormalizer('fqdn', Normalizer::normalizeFqdn());

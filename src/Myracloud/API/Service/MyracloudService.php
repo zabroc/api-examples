@@ -242,6 +242,10 @@ class MyracloudService
             curl_setopt($ch, CURLOPT_POSTFIELDS, $options['content']);
         }
 
+        if (!empty($options['proxy'])) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $options['proxy']);
+        }
+
         $ret        = curl_exec($ch);
         $returnCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);

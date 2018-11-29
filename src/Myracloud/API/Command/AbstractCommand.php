@@ -48,6 +48,7 @@ abstract class AbstractCommand extends Command
             'language'    => $this->options['language'],
             'verbose'     => $output->isVeryVerbose(),
             'noCheckCert' => $this->options['noCheckCert'],
+            'proxy'       => $this->options['proxy'],
         ], $output);
     }
 

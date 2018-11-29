@@ -94,6 +94,7 @@ EOF
             'fqdn'        => null,
             'language'    => self::DEFAULT_LANGUAGE,
             'apiEndpoint' => self::DEFAULT_API_ENDPOINT,
+            'proxy'       => null,
             'start'       => null,
             'end'         => null,
             'nStart'      => null,

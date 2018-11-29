@@ -74,6 +74,7 @@ EOF
             'fqdn'        => null,
             'language'    => self::DEFAULT_LANGUAGE,
             'apiEndpoint' => self::DEFAULT_API_ENDPOINT,
+            'proxy'       => null,
             'errorCodes'  => [],
             'operation'   => self::TYPE_OPERATION_UPLOAD,
             'contentFile' => null
