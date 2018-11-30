@@ -68,5 +68,6 @@ abstract class AbstractCommand extends Command
         $this->addOption('language', 'l', InputOption::VALUE_REQUIRED, 'Api language to use.', self::DEFAULT_LANGUAGE);
         $this->addOption('apiEndpoint', null, InputOption::VALUE_REQUIRED, 'Api endpoint to use.', self::DEFAULT_API_ENDPOINT);
         $this->addOption('noCheckCert', null, InputOption::VALUE_NONE, 'Disable curl pear verification.');
+        $this->addOption('proxy', null, InputOption::VALUE_NONE, 'Access Api via given proxy.', null);
     }
 }
